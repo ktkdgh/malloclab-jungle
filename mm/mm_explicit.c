@@ -83,9 +83,11 @@ static char *free_list_start;
 int mm_init(void) {
     if ((heap_listp = mem_sbrk(8*WSIZE)) == (void *)-1) { return -1; }
     PUT(heap_listp, 0); 
-    PUT(heap_listp + (1*WSIZE), PACK(DSIZE, 1));  /* Prologue header */
-    PUT(heap_listp + (2*WSIZE), PACK(DSIZE, 1));  /* Prologue footer */            
-    PUT(heap_listp + (3*WSIZE), PACK(0, 1));   /* Epilogue header */        
+    PUT(heap_listp + (1*WSIZE), PACK(2*DSIZE, 1));  /* Prologue header */
+    PUT(heap_listp + (2 * WSIZE), NULL);    /* prev free block pointer 는 null */
+	PUT(heap_listp + (3 * WSIZE), NULL);    /* next free block pointer 는 null */
+    PUT(heap_listp + (2*WSIZE), PACK(2*DSIZE, 1));  /* Prologue footer */            
+    PUT(heap_listp + (3*WSIZE), PACK(0, 1));     /* Epilogue header */        
     free_list_start = heap_listp + (2*WSIZE); 
     if (extend_heap(CHUNKSIZE/WSIZE) == NULL) { return -1; }
     
@@ -160,11 +162,9 @@ void mm_free(void *bp) {
 static void *find_fit(size_t asize) {
     /* First-fit search */
     void *bp;
-    static int last_malloced_size = 0;
 
-    for (bp = free_list_start; GET_ALLOC(HDRP(bp)) == 0; bp = GET_NEXT_PTR(bp)) {
+    for (bp = free_list_start; !GET_ALLOC(HDRP(bp)); bp = GET_NEXT_PTR(bp)) {
         if (asize <= (size_t)GET_SIZE(HDRP(bp))) {
-            last_malloced_size = asize;
             return bp;
         }
     }
