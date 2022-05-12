@@ -84,10 +84,10 @@ int mm_init(void) {
     if ((heap_listp = mem_sbrk(8*WSIZE)) == (void *)-1) { return -1; }
     PUT(heap_listp, 0); 
     PUT(heap_listp + (1*WSIZE), PACK(2*DSIZE, 1));  /* Prologue header */
-    PUT(heap_listp + (2 * WSIZE), NULL);    /* prev free block pointer 는 null */
-	PUT(heap_listp + (3 * WSIZE), NULL);    /* succ free block pointer 는 null */
-    PUT(heap_listp + (2*WSIZE), PACK(2*DSIZE, 1));  /* Prologue footer */            
-    PUT(heap_listp + (3*WSIZE), PACK(0, 1));     /* Epilogue header */        
+    PUT(heap_listp + (2*WSIZE), NULL);    /* prev free block pointer 는 null */
+    PUT(heap_listp + (3*WSIZE), NULL);    /* succ free block pointer 는 null */
+    PUT(heap_listp + (4*WSIZE), PACK(2*DSIZE, 1));  /* Prologue footer */            
+    PUT(heap_listp + (5*WSIZE), PACK(0, 1));     /* Epilogue header */        
     free_list_start = heap_listp + (2*WSIZE); 
     if (extend_heap(CHUNKSIZE/WSIZE) == NULL) { return -1; }
     
