@@ -85,7 +85,7 @@ int mm_init(void) {
     PUT(heap_listp, 0); 
     PUT(heap_listp + (1*WSIZE), PACK(2*DSIZE, 1));  /* Prologue header */
     PUT(heap_listp + (2 * WSIZE), NULL);    /* prev free block pointer 는 null */
-	PUT(heap_listp + (3 * WSIZE), NULL);    /* next free block pointer 는 null */
+	PUT(heap_listp + (3 * WSIZE), NULL);    /* succ free block pointer 는 null */
     PUT(heap_listp + (2*WSIZE), PACK(2*DSIZE, 1));  /* Prologue footer */            
     PUT(heap_listp + (3*WSIZE), PACK(0, 1));     /* Epilogue header */        
     free_list_start = heap_listp + (2*WSIZE); 
